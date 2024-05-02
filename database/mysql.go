@@ -24,12 +24,14 @@ func InitDatabase() {
 	var err error
 	db, err = sql.Open("mysql", cfg.FormatDSN())
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
+		return
 	}
 
 	pingErr := db.Ping()
 	if pingErr != nil {
-		log.Fatal(pingErr)
+		log.Panic(pingErr)
+		return
 	}
 	fmt.Println("Connected!")
 }
