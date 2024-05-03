@@ -2,7 +2,6 @@ package models
 
 import (
 	"log"
-	"strings"
 
 	"github.com/calvinanto/secret-santa-api-v2/database"
 	"github.com/google/uuid"
@@ -63,32 +62,4 @@ func NewGame(size int) (string, error) {
 
 	log.Println("Created new game " + id)
 	return id, nil
-}
-
-func NewPlayer(gameId string, size int) error {
-	db := database.GetDB()
-
-	query := "INSERT INTO player(id, game_id) VALUES "
-
-	vals := []interface{}{}
-
-	for range size {
-		query += "(?, ?),"
-		id := uuid.New().String()
-		log.Printf("Adding player %s to %s\n", id, gameId)
-		vals = append(vals, id, gameId)
-	}
-
-	query = strings.TrimSuffix(query, ",")
-
-	stmt, _ := db.Prepare(query)
-
-	_, err := stmt.Exec(vals...)
-
-	if err != nil {
-		log.Panic("Error insert player", err)
-		return err
-	}
-
-	return nil
 }
