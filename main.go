@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/calvinanto/secret-santa-api-v2/database"
+	"github.com/calvinanto/secret-santa-api-v2/middleware"
 	"github.com/calvinanto/secret-santa-api-v2/routers"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -31,6 +32,8 @@ func main() {
 	database.InitDatabase()
 
 	router := gin.Default()
+
+	router.Use(middleware.Logger())
 
 	router.GET("/", HelloWorld)
 

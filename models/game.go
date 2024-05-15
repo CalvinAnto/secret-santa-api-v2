@@ -63,3 +63,39 @@ func NewGame(size int) (string, error) {
 	log.Println("Created new game " + id)
 	return id, nil
 }
+
+func FreeSlot(gameId string) (int, error) {
+	db := database.GetDB()
+
+	query := `
+		SELECT
+			COUNT(*) as count
+		FROM
+			game
+			JOIN player ON player.game_id = game.id
+		WHERE
+			game_id = (?)
+			AND taken IS NULL
+	`
+
+	rows, err := db.Query(query, gameId)
+
+	if err != nil {
+		return 0, err
+	}
+
+	defer rows.Close()
+
+	rows.Next()
+
+	var freeSlot int
+
+	err = rows.Scan(&freeSlot)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return freeSlot, err
+
+}

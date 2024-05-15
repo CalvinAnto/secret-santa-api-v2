@@ -19,7 +19,7 @@ func GetAllGamesHandler(c *gin.Context) {
 	games, err := models.GetAllGames()
 
 	if err != nil {
-		log.Panic(err)
+		log.Println(err)
 		c.IndentedJSON(http.StatusBadRequest, err)
 		c.Abort()
 		return
@@ -30,9 +30,18 @@ func GetAllGamesHandler(c *gin.Context) {
 
 func GetGameStatusById(c *gin.Context) {
 
-	param := c.Param("game-id")
+	gameId := c.Param("game-id")
 
-	c.IndentedJSON(http.StatusOK, gin.H{"param": param})
+	count, err := models.FreeSlot(gameId)
+
+	if err != nil {
+		log.Println(err)
+		c.IndentedJSON(http.StatusBadRequest, err)
+		c.Abort()
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, gin.H{"count": count})
 
 }
 
